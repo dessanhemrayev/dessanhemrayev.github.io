@@ -193,7 +193,11 @@ class Component extends DCLogic {
   state = { lang: null };
 
   componentDidMount() { this.applyAccent(); }
-  componentDidUpdate() { this.applyAccent(); }
+  componentDidUpdate(prevProps) {
+    if (this.props.accent !== prevProps.accent) {
+      this.applyAccent();
+    }
+  }
   applyAccent() {
     const a = this.props.accent;
     if (a) document.documentElement.style.setProperty('--acc', a);
