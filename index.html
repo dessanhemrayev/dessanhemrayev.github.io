@@ -1,373 +1,462 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<script src="./support.js"></script>
-</head>
-<body>
-<x-dc>
-<helmet>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dessan Hemrayev — Backend Engineer · Communications Infrastructure</title>
+<meta name="description" content="Backend engineer specializing in VoIP and communications infrastructure. PhD researcher in intelligent decision support.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  :root { --acc: #4bf59a; }
-  * { box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
-  body { margin: 0; background: #0a0d0b; }
-  ::selection { background: var(--acc); color: #0a0d0b; }
-  @keyframes blink { 0%,49%{opacity:1} 50%,100%{opacity:0} }
-  @keyframes floaty { 0%{transform:translateY(0)} 50%{transform:translateY(-10px)} 100%{transform:translateY(0)} }
+:root{
+  --paper:#F3F5F8;
+  --panel:#FBFCFE;
+  --ink:#131F38;
+  --ink-soft:#4B5871;
+  --line:#C9D2DE;
+  --line-soft:#E1E7EF;
+  --blue:#1F5FD0;
+  --blue-deep:#123C8C;
+  --orange:#E8641B;
+  --green:#1E7A4C;
+  --brown:#8A5A2B;
+  --slate:#5B6B7E;
+  --ok:#1E7A4C;
+  --display:"Bricolage Grotesque",sans-serif;
+  --body:"IBM Plex Sans",sans-serif;
+  --mono:"IBM Plex Mono",monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+::selection{background:var(--blue);color:#fff}
+
+/* ---------- header ---------- */
+header{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--paper) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.hwrap{max-width:1120px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;gap:20px}
+.brand{font-family:var(--mono);font-size:13px;letter-spacing:.04em;text-decoration:none;display:flex;align-items:center;gap:10px}
+.brand .dot{width:8px;height:8px;border-radius:50%;background:var(--line);transition:background .4s}
+.brand .dot.live{background:var(--ok);box-shadow:0 0 0 3px color-mix(in srgb,var(--ok) 20%,transparent)}
+nav{margin-left:auto;display:flex;gap:2px}
+nav a{font-family:var(--mono);font-size:12.5px;text-decoration:none;color:var(--ink-soft);padding:6px 10px;border-radius:6px}
+nav a:hover{color:var(--ink);background:var(--line-soft)}
+.lang{display:flex;border:1px solid var(--line);border-radius:7px;overflow:hidden;margin-left:8px}
+.lang button{font-family:var(--mono);font-size:12px;padding:5px 10px;border:0;background:transparent;color:var(--ink-soft);cursor:pointer}
+.lang button.on{background:var(--ink);color:var(--paper)}
+.lang button:focus-visible,nav a:focus-visible,a:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+
+/* ---------- hero ---------- */
+.hero{max-width:1120px;margin:0 auto;padding:72px 24px 64px;display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center}
+.kicker{font-family:var(--mono);font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);display:flex;align-items:center;gap:10px;margin-bottom:18px}
+.kicker::before{content:"";width:28px;height:1px;background:var(--blue)}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(42px,6vw,68px);line-height:1.02;letter-spacing:-.015em;margin-bottom:20px}
+h1 .thin{font-weight:400;color:var(--ink-soft)}
+.hero p.lede{font-size:17.5px;color:var(--ink-soft);max-width:46ch;margin-bottom:28px}
+.hero-links{display:flex;flex-wrap:wrap;gap:10px}
+.btn{font-family:var(--mono);font-size:13.5px;text-decoration:none;padding:10px 16px;border-radius:8px;border:1px solid var(--line);background:var(--panel);transition:border-color .15s, transform .15s}
+.btn:hover{border-color:var(--ink);transform:translateY(-1px)}
+.btn.primary{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.btn.primary:hover{background:var(--blue-deep);border-color:var(--blue-deep)}
+
+/* ladder diagram */
+.ladder{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px 22px 16px;box-shadow:0 1px 2px rgba(19,31,56,.05),0 12px 32px -18px rgba(19,31,56,.18)}
+.ladder-head{display:flex;justify-content:space-between;align-items:baseline;font-family:var(--mono);font-size:12px;color:var(--ink-soft);margin-bottom:6px}
+.ladder-head .proto{color:var(--blue)}
+.ladder svg{width:100%;height:auto;display:block}
+.ladder text{font-family:var(--mono)}
+.lifeline{stroke:var(--line);stroke-width:1.5}
+.endpoint{fill:var(--panel);stroke:var(--ink);stroke-width:1.5}
+.ep-label{fill:var(--ink);font-size:11.5px;font-weight:500}
+.msg-line{stroke:var(--ink);stroke-width:1.5;marker-end:url(#arr)}
+.msg-line.resp{stroke:var(--slate);stroke-dasharray:5 4;marker-end:url(#arr-soft)}
+.msg-label{fill:var(--ink);font-size:11px}
+.msg-label.resp{fill:var(--slate)}
+.msg{opacity:0;transform:translateY(4px)}
+.msg.show{opacity:1;transform:none;transition:opacity .45s ease,transform .45s ease}
+.ladder-foot{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);font-family:var(--mono);font-size:12px;color:var(--ink-soft);display:flex;align-items:center;gap:8px}
+.ladder-foot .st{width:7px;height:7px;border-radius:50%;background:var(--line);transition:background .4s}
+.ladder-foot.done .st{background:var(--ok)}
+.ladder-foot.done{color:var(--ok)}
+
+/* ---------- sections ---------- */
+section{max-width:1120px;margin:0 auto;padding:64px 24px;border-top:1px solid var(--line-soft)}
+.sec-head{display:flex;align-items:center;gap:14px;margin-bottom:34px}
+.pair{display:inline-flex;width:34px;height:14px;border-radius:3px;overflow:hidden;border:1px solid var(--line)}
+.pair i{flex:1}
+.pair .w{background:#fff}
+.pair .bl{background:var(--blue)}.pair .or{background:var(--orange)}.pair .gn{background:var(--green)}.pair .bn{background:var(--brown)}.pair .sl{background:var(--slate)}
+.sec-tag{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft)}
+h2{font-family:var(--display);font-weight:600;font-size:clamp(26px,3.4vw,36px);letter-spacing:-.01em;margin-bottom:22px}
+
+/* about */
+.about-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:48px}
+.about-grid p{color:var(--ink-soft);margin-bottom:14px;max-width:58ch}
+.about-grid p strong{color:var(--ink);font-weight:600}
+.factbox{border-left:2px solid var(--blue);padding-left:20px;align-self:start}
+.fact{margin-bottom:16px}
+.fact .k{font-family:var(--mono);font-size:11.5px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-soft)}
+.fact .v{font-size:15px;font-weight:500}
+
+/* stack */
+.stack-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.stack-card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 20px}
+.stack-card h3{font-family:var(--mono);font-size:12.5px;text-transform:uppercase;letter-spacing:.07em;color:var(--blue);margin-bottom:12px;font-weight:500}
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{font-family:var(--mono);font-size:13px;padding:4px 10px;border-radius:6px;background:var(--paper);border:1px solid var(--line-soft)}
+
+/* work */
+.work-list{display:grid;gap:14px}
+.work-card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:22px 24px;display:grid;grid-template-columns:150px 1fr;gap:22px;transition:border-color .15s}
+.work-card:hover{border-color:var(--ink)}
+.work-card .id{font-family:var(--mono);font-size:12px;color:var(--ink-soft)}
+.work-card h3{font-family:var(--display);font-size:20px;font-weight:600;margin-bottom:8px}
+.work-card p{color:var(--ink-soft);font-size:15px;max-width:66ch}
+.work-card .tags{margin-top:12px;display:flex;flex-wrap:wrap;gap:7px}
+
+/* research */
+.res-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:48px}
+.res-grid p{color:var(--ink-soft);max-width:58ch;margin-bottom:14px}
+.res-links{display:grid;gap:8px;align-self:start}
+.res-links a{font-family:var(--mono);font-size:13.5px;text-decoration:none;padding:11px 16px;border:1px solid var(--line);border-radius:9px;background:var(--panel);display:flex;justify-content:space-between;transition:border-color .15s}
+.res-links a:hover{border-color:var(--ink)}
+.res-links a span{color:var(--ink-soft)}
+
+/* notes */
+.notes-card{background:var(--ink);color:var(--paper);border-radius:14px;padding:34px 36px;display:grid;grid-template-columns:1fr auto;gap:28px;align-items:center}
+.notes-card h3{font-family:var(--display);font-size:24px;font-weight:600;margin-bottom:8px}
+.notes-card p{color:#B8C2D6;font-size:15px;max-width:60ch}
+.notes-card .path{font-family:var(--mono);font-size:12.5px;color:#8FA0C0;margin-top:12px}
+.notes-card .btn{background:var(--paper);color:var(--ink);border-color:var(--paper);white-space:nowrap}
+.notes-card .btn:hover{background:#fff}
+
+/* contact / footer */
+footer{border-top:1px solid var(--line);margin-top:24px}
+.fwrap{max-width:1120px;margin:0 auto;padding:56px 24px 40px}
+.fwrap h2{margin-bottom:10px}
+.fwrap .sub{color:var(--ink-soft);margin-bottom:24px}
+.contact-row{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:44px}
+.legal{display:flex;justify-content:space-between;font-family:var(--mono);font-size:12px;color:var(--ink-soft);border-top:1px dashed var(--line);padding-top:18px}
+
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease}
+.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){
+  *{transition:none!important;animation:none!important}
+  .msg,.reveal{opacity:1;transform:none}
+}
+@media (max-width:900px){
+  .hero{grid-template-columns:1fr;padding-top:48px;gap:36px}
+  .about-grid,.res-grid{grid-template-columns:1fr}
+  .stack-grid{grid-template-columns:1fr 1fr}
+  nav{display:none}
+}
+@media (max-width:560px){
+  .stack-grid{grid-template-columns:1fr}
+  .work-card{grid-template-columns:1fr;gap:8px}
+  .notes-card{grid-template-columns:1fr}
+}
 </style>
-</helmet>
+</head>
+<body>
 
-<div style="background:#0a0d0b; color:#e8ece8; font-family:'Space Grotesk',sans-serif; min-height:100vh; overflow-x:hidden;">
-
-  <!-- NAV -->
-  <div style="position:sticky; top:0; z-index:50; display:flex; align-items:center; justify-content:space-between; gap:1rem; padding:0.9rem clamp(1.2rem,5vw,5rem); border-bottom:1px solid rgba(232,236,232,0.08); background:rgba(10,13,11,0.72); backdrop-filter:blur(12px);">
-    <div style="font-family:'JetBrains Mono',monospace; font-size:0.9rem; font-weight:700; letter-spacing:0.02em; display:flex; align-items:center; gap:2px;">
-      <span style="color:var(--acc);">~/</span><span>dessanhemrayev</span><span style="color:var(--acc); animation:blink 1.1s step-end infinite;">▮</span>
+<header>
+  <div class="hwrap">
+    <a class="brand" href="#top"><span class="dot" id="statusDot"></span>hemrayev / exchange</a>
+    <nav>
+      <a href="#about" data-i="nav_about">about</a>
+      <a href="#stack" data-i="nav_stack">stack</a>
+      <a href="#work" data-i="nav_work">work</a>
+      <a href="#research" data-i="nav_research">research</a>
+      <a href="#notes" data-i="nav_notes">notes</a>
+      <a href="#contact" data-i="nav_contact">contact</a>
+    </nav>
+    <div class="lang" role="group" aria-label="Language">
+      <button id="btnEN" class="on" onclick="setLang('en')">EN</button>
+      <button id="btnRU" onclick="setLang('ru')">RU</button>
     </div>
-    <div style="display:flex; align-items:center; gap:clamp(0.6rem,2vw,1.8rem); font-family:'JetBrains Mono',monospace; font-size:0.82rem;">
-      <a href="#about" style="color:#8a938c; text-decoration:none;" style-hover="color:#e8ece8;">{{ t.nav.about }}</a>
-      <a href="#stack" style="color:#8a938c; text-decoration:none;" style-hover="color:#e8ece8;">{{ t.nav.stack }}</a>
-      <a href="#work" style="color:#8a938c; text-decoration:none;" style-hover="color:#e8ece8;">{{ t.nav.work }}</a>
-      <a href="#pubs" style="color:#8a938c; text-decoration:none;" style-hover="color:#e8ece8;">{{ t.nav.pubs }}</a>
-      <a href="#contact" style="color:#8a938c; text-decoration:none;" style-hover="color:#e8ece8;">{{ t.nav.contact }}</a>
-      <div style="display:flex; gap:2px; margin-left:0.3rem; border:1px solid rgba(232,236,232,0.12); border-radius:6px; padding:2px;">
-        <button onClick="{{ setEn }}" style="{{ enTabStyle }}">EN</button>
-        <button onClick="{{ setRu }}" style="{{ ruTabStyle }}">RU</button>
+  </div>
+</header>
+
+<main id="top">
+  <div class="hero">
+    <div>
+      <div class="kicker" data-i="hero_kicker">backend · communications infrastructure</div>
+      <h1>Dessan<br>Hemrayev<br><span class="thin" data-i="hero_sub">builds the lines people talk over.</span></h1>
+      <p class="lede" data-i="hero_lede">Backend engineer with 6+ years in production systems — VoIP platforms, real-time messaging, and the infrastructure that keeps calls connected. PhD researcher in intelligent decision support.</p>
+      <div class="hero-links">
+        <a class="btn primary" href="https://github.com/dessanhemrayev">GitHub →</a>
+        <a class="btn" href="https://dev.to/dessanhemrayev">Dev.to</a>
+        <a class="btn" href="#notes" data-i="hero_notes">Knowledge base</a>
       </div>
+    </div>
+
+    <div class="ladder" aria-label="SIP call flow diagram">
+      <div class="ladder-head"><span class="proto">SIP/2.0</span><span data-i="ladder_head">session setup</span></div>
+      <svg viewBox="0 0 440 300" role="img">
+        <defs>
+          <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#131F38"/>
+          </marker>
+          <marker id="arr-soft" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#5B6B7E"/>
+          </marker>
+        </defs>
+        <rect class="endpoint" x="30" y="14" width="90" height="30" rx="7"/>
+        <text class="ep-label" x="75" y="34" text-anchor="middle" data-i="ep_you">you</text>
+        <rect class="endpoint" x="320" y="14" width="90" height="30" rx="7"/>
+        <text class="ep-label" x="365" y="34" text-anchor="middle">dessan</text>
+        <line class="lifeline" x1="75" y1="44" x2="75" y2="290"/>
+        <line class="lifeline" x1="365" y1="44" x2="365" y2="290"/>
+
+        <g class="msg"><text class="msg-label" x="220" y="80" text-anchor="middle">INVITE</text>
+          <line class="msg-line" x1="75" y1="90" x2="360" y2="90"/></g>
+        <g class="msg"><text class="msg-label resp" x="220" y="128" text-anchor="middle">100 Trying</text>
+          <line class="msg-line resp" x1="365" y1="138" x2="80" y2="138"/></g>
+        <g class="msg"><text class="msg-label resp" x="220" y="176" text-anchor="middle">180 Ringing</text>
+          <line class="msg-line resp" x1="365" y1="186" x2="80" y2="186"/></g>
+        <g class="msg"><text class="msg-label" x="220" y="224" text-anchor="middle">200 OK</text>
+          <line class="msg-line" x1="365" y1="234" x2="80" y2="234"/></g>
+        <g class="msg"><text class="msg-label" x="220" y="272" text-anchor="middle">ACK</text>
+          <line class="msg-line" x1="75" y1="282" x2="360" y2="282"/></g>
+      </svg>
+      <div class="ladder-foot" id="ladderFoot"><span class="st"></span><span id="ladderFootText" data-i="ladder_wait">establishing session…</span></div>
     </div>
   </div>
 
-  <!-- HERO -->
-  <section data-screen-label="Hero" style="padding:clamp(3rem,9vw,7rem) clamp(1.2rem,5vw,5rem) clamp(4rem,8vw,6rem); display:grid; grid-template-columns:minmax(0,1.15fr) minmax(0,0.85fr); gap:clamp(2rem,5vw,4rem); align-items:center; max-width:1400px; margin:0 auto;">
-    <div>
-      <div style="display:inline-flex; align-items:center; gap:0.5rem; font-family:'JetBrains Mono',monospace; font-size:0.8rem; color:var(--acc); border:1px solid rgba(75,245,154,0.3); border-radius:100px; padding:0.35rem 0.85rem; margin-bottom:1.6rem;">
-        <span style="width:7px; height:7px; border-radius:50%; background:var(--acc); box-shadow:0 0 10px var(--acc);"></span>{{ t.availTag }}
-      </div>
-      <h1 style="font-size:clamp(3.2rem,11vw,10rem); line-height:0.86; font-weight:700; letter-spacing:-0.04em; margin:0;">
-        <span style="display:block;">DESSAN</span>
-        <span style="display:block; color:var(--acc);">HEMRAYEV</span>
-      </h1>
-      <div style="font-family:'JetBrains Mono',monospace; font-size:clamp(0.95rem,2.2vw,1.35rem); color:#c4ccc6; margin:1.4rem 0 1.2rem; letter-spacing:0.02em;">{{ t.role }}</div>
-      <p style="max-width:34rem; font-size:clamp(1rem,1.4vw,1.18rem); line-height:1.6; color:#9aa39c; margin:0 0 2rem;">{{ t.heroDesc }}</p>
-      <div style="display:flex; flex-wrap:wrap; gap:0.8rem;">
-        <a href="https://github.com/dessanhemrayev" target="_blank" style="font-family:'JetBrains Mono',monospace; font-size:0.9rem; font-weight:700; text-decoration:none; color:#0a0d0b; background:var(--acc); padding:0.85rem 1.5rem; border-radius:8px;" style-hover="transform:translateY(-2px);">GitHub →</a>
-        <a href="https://dev.to/dessanhemrayev" target="_blank" style="font-family:'JetBrains Mono',monospace; font-size:0.9rem; font-weight:500; text-decoration:none; color:#e8ece8; border:1px solid rgba(232,236,232,0.2); padding:0.85rem 1.5rem; border-radius:8px;" style-hover="border-color:var(--acc); color:var(--acc);">Dev.to</a>
-      </div>
+  <section id="about" class="reveal">
+    <div class="sec-head">
+      <span class="pair"><i class="w"></i><i class="bl"></i></span>
+      <span class="sec-tag">wh/bl — <span data-i="nav_about">about</span></span>
     </div>
-
-    <sc-if value="{{ showTerminal }}" hint-placeholder-val="{{ true }}">
-    <div style="animation:floaty 6s ease-in-out infinite;">
-      <div style="background:#0f130f; border:1px solid rgba(232,236,232,0.1); border-radius:12px; overflow:hidden; box-shadow:0 30px 80px rgba(0,0,0,0.5);">
-        <div style="display:flex; align-items:center; gap:0.5rem; padding:0.8rem 1rem; border-bottom:1px solid rgba(232,236,232,0.08); background:#0a0d0b;">
-          <span style="width:11px; height:11px; border-radius:50%; background:#ff5f56;"></span>
-          <span style="width:11px; height:11px; border-radius:50%; background:#ffbd2e;"></span>
-          <span style="width:11px; height:11px; border-radius:50%; background:#27c93f;"></span>
-          <span style="margin-left:0.5rem; font-family:'JetBrains Mono',monospace; font-size:0.72rem; color:#6b7a70;">dev.py</span>
-        </div>
-        <pre style="margin:0; padding:1.4rem 1.5rem; font-family:'JetBrains Mono',monospace; font-size:clamp(0.72rem,1vw,0.86rem); line-height:1.75; color:#c4ccc6; overflow-x:auto;"><span style="color:#c678dd;">class</span> <span style="color:var(--acc);">BackendDeveloper</span>:
-    name  = <span style="color:#a8c7a0;">"Dessan"</span>
-    role  = <span style="color:#a8c7a0;">"Backend Developer"</span>
-    stack = [<span style="color:#a8c7a0;">"Python"</span>, <span style="color:#a8c7a0;">"Go"</span>, <span style="color:#a8c7a0;">"FastAPI"</span>]
-    focus = [<span style="color:#a8c7a0;">"APIs"</span>, <span style="color:#a8c7a0;">"VOIP"</span>, <span style="color:#a8c7a0;">"Cloud"</span>]
-
-    <span style="color:#c678dd;">def</span> <span style="color:#61afef;">say_hi</span>(self):
-        <span style="color:#61afef;">print</span>(<span style="color:#a8c7a0;">"Let's build something."</span>)</pre>
+    <div class="about-grid">
+      <div>
+        <h2 data-i="about_h">Six years on the wire.</h2>
+        <p data-i="about_p1">I work on the backend of real-time communication: SIP servers, XMPP messaging, WebRTC gateways — the systems where a dropped packet is a dropped word. My daily tools are <strong>Flexisip, Asterisk and Openfire</strong>, wired together with Go, Python, Java and C#.</p>
+        <p data-i="about_p2">Alongside industry work, I'm a PhD researcher building models and algorithms for intelligent decision support — bringing formal methods to the operational chaos of infrastructure management.</p>
+      </div>
+      <div class="factbox">
+        <div class="fact"><div class="k" data-i="f1k">experience</div><div class="v" data-i="f1v">6+ years, production backend</div></div>
+        <div class="fact"><div class="k" data-i="f2k">focus</div><div class="v" data-i="f2v">VoIP · messaging · infrastructure</div></div>
+        <div class="fact"><div class="k" data-i="f3k">research</div><div class="v" data-i="f3v">intelligent decision support</div></div>
+        <div class="fact"><div class="k" data-i="f4k">status</div><div class="v" data-i="f4v">open to interesting problems</div></div>
       </div>
     </div>
-    </sc-if>
   </section>
 
-  <!-- ABOUT -->
-  <section id="about" data-screen-label="About" style="padding:clamp(4rem,9vw,8rem) clamp(1.2rem,5vw,5rem); border-top:1px solid rgba(232,236,232,0.07); max-width:1100px; margin:0 auto;">
-    <div style="font-family:'JetBrains Mono',monospace; font-size:0.82rem; color:var(--acc); margin-bottom:1.6rem;">{{ t.aboutKicker }}</div>
-    <p style="font-size:clamp(1.5rem,3.6vw,2.6rem); line-height:1.35; font-weight:500; letter-spacing:-0.02em; margin:0 0 1.4rem; text-wrap:pretty;">{{ t.about }}</p>
-    <p style="font-family:'JetBrains Mono',monospace; font-size:clamp(0.9rem,1.4vw,1.05rem); line-height:1.6; color:#8a938c; margin:0;">{{ t.about2 }}</p>
+  <section id="stack" class="reveal">
+    <div class="sec-head">
+      <span class="pair"><i class="w"></i><i class="or"></i></span>
+      <span class="sec-tag">wh/or — <span data-i="nav_stack">stack</span></span>
+    </div>
+    <h2 data-i="stack_h">Tools of the trade</h2>
+    <div class="stack-grid">
+      <div class="stack-card"><h3 data-i="st1">languages</h3><div class="chips"><span class="chip">Go</span><span class="chip">Python</span><span class="chip">Java</span><span class="chip">C#</span><span class="chip">Dart</span></div></div>
+      <div class="stack-card"><h3 data-i="st2">communications</h3><div class="chips"><span class="chip">SIP</span><span class="chip">Flexisip</span><span class="chip">Asterisk</span><span class="chip">XMPP / Openfire</span><span class="chip">WebRTC</span></div></div>
+      <div class="stack-card"><h3 data-i="st3">platform</h3><div class="chips"><span class="chip">Odoo</span><span class="chip">PostgreSQL</span><span class="chip">Docker</span><span class="chip">Linux</span><span class="chip">Git / CI</span></div></div>
+    </div>
   </section>
 
-  <!-- STACK -->
-  <section id="stack" data-screen-label="Stack" style="padding:clamp(4rem,9vw,8rem) clamp(1.2rem,5vw,5rem); border-top:1px solid rgba(232,236,232,0.07); max-width:1400px; margin:0 auto;">
-    <div style="font-family:'JetBrains Mono',monospace; font-size:0.82rem; color:var(--acc); margin-bottom:0.8rem;">{{ t.stackKicker }}</div>
-    <h2 style="font-size:clamp(2rem,5vw,3.6rem); font-weight:700; letter-spacing:-0.03em; margin:0 0 2.6rem;">{{ t.stackHeading }}</h2>
-    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:1px; background:rgba(232,236,232,0.08); border:1px solid rgba(232,236,232,0.08); border-radius:12px; overflow:hidden;">
-      <sc-for list="{{ t.stackGroups }}" as="g" hint-placeholder-count="4">
-        <div style="background:#0a0d0b; padding:1.6rem 1.5rem;">
-          <div style="font-family:'JetBrains Mono',monospace; font-size:0.76rem; text-transform:uppercase; letter-spacing:0.12em; color:#6b7a70; margin-bottom:1.1rem;">{{ g.label }}</div>
-          <div style="display:flex; flex-wrap:wrap; gap:0.5rem;">
-            <sc-for list="{{ g.items }}" as="it" hint-placeholder-count="4">
-              <span style="font-family:'JetBrains Mono',monospace; font-size:0.85rem; color:#d4dbd6; border:1px solid rgba(232,236,232,0.14); border-radius:6px; padding:0.35rem 0.7rem;" style-hover="border-color:var(--acc); color:var(--acc);">{{ it }}</span>
-            </sc-for>
-          </div>
+  <section id="work" class="reveal">
+    <div class="sec-head">
+      <span class="pair"><i class="w"></i><i class="gn"></i></span>
+      <span class="sec-tag">wh/gn — <span data-i="nav_work">work</span></span>
+    </div>
+    <h2 data-i="work_h">Selected work</h2>
+    <div class="work-list">
+      <div class="work-card">
+        <div class="id">CALL-001</div>
+        <div>
+          <h3 data-i="w1h">Enterprise communications infrastructure</h3>
+          <p data-i="w1p">SIP registration, routing and push delivery on Flexisip; PBX logic on Asterisk; corporate messaging on Openfire — deployed and debugged down to the packet level.</p>
+          <div class="tags"><span class="chip">Flexisip</span><span class="chip">Asterisk</span><span class="chip">Openfire</span></div>
         </div>
-      </sc-for>
-    </div>
-  </section>
-
-  <!-- WORK -->
-  <section id="work" data-screen-label="Work" style="padding:clamp(4rem,9vw,8rem) clamp(1.2rem,5vw,5rem); border-top:1px solid rgba(232,236,232,0.07); max-width:1400px; margin:0 auto;">
-    <div style="font-family:'JetBrains Mono',monospace; font-size:0.82rem; color:var(--acc); margin-bottom:0.8rem;">{{ t.workKicker }}</div>
-    <h2 style="font-size:clamp(2rem,5vw,3.6rem); font-weight:700; letter-spacing:-0.03em; margin:0 0 2.6rem;">{{ t.workHeading }}</h2>
-    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1.2rem;">
-      <sc-for list="{{ t.workCards }}" as="c" hint-placeholder-count="3">
-        <div style="background:#0f130f; border:1px solid rgba(232,236,232,0.1); border-radius:12px; padding:1.8rem 1.6rem; display:flex; flex-direction:column; gap:0.9rem;" style-hover="border-color:var(--acc); transform:translateY(-4px);">
-          <div style="font-family:'JetBrains Mono',monospace; font-size:0.85rem; color:var(--acc);">{{ c.no }}</div>
-          <h3 style="font-size:1.35rem; font-weight:600; margin:0; letter-spacing:-0.01em;">{{ c.title }}</h3>
-          <p style="font-size:0.98rem; line-height:1.6; color:#9aa39c; margin:0;">{{ c.desc }}</p>
+      </div>
+      <div class="work-card">
+        <div class="id">MSG-002</div>
+        <div>
+          <h3 data-i="w2h">End-to-end encrypted messenger</h3>
+          <p data-i="w2p">A from-scratch E2EE messenger: protocol design, key management and server architecture — where cryptography meets delivery guarantees.</p>
+          <div class="tags"><span class="chip">E2EE</span><span class="chip">Go</span><span class="chip">Flutter</span></div>
         </div>
-      </sc-for>
-    </div>
-    <div style="margin-top:2.4rem; display:flex; flex-wrap:wrap; align-items:center; gap:0.8rem;">
-      <span style="font-family:'JetBrains Mono',monospace; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.1em; color:#6b7a70;">{{ t.learningLabel }}:</span>
-      <sc-for list="{{ t.learning }}" as="l" hint-placeholder-count="4">
-        <span style="font-family:'JetBrains Mono',monospace; font-size:0.85rem; color:#c4ccc6;">{{ l }}</span>
-      </sc-for>
-    </div>
-  </section>
-
-  <!-- PUBLICATIONS -->
-  <section id="pubs" data-screen-label="Publications" style="padding:clamp(4rem,9vw,8rem) clamp(1.2rem,5vw,5rem); border-top:1px solid rgba(232,236,232,0.07); max-width:1200px; margin:0 auto;">
-    <div style="font-family:'JetBrains Mono',monospace; font-size:0.82rem; color:var(--acc); margin-bottom:0.8rem;">{{ t.pubsKicker }}</div>
-    <h2 style="font-size:clamp(2rem,5vw,3.6rem); font-weight:700; letter-spacing:-0.03em; margin:0 0 0.7rem;">{{ t.pubsHeading }}</h2>
-    <p style="font-size:clamp(0.95rem,1.4vw,1.1rem); color:#9aa39c; margin:0 0 2.4rem; max-width:40rem;">{{ t.pubsSub }}</p>
-
-    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:1px; background:rgba(232,236,232,0.08); border:1px solid rgba(232,236,232,0.08); border-radius:12px; overflow:hidden; margin-bottom:2.4rem;">
-      <sc-for list="{{ pubStats }}" as="s" hint-placeholder-count="4">
-        <div style="background:#0a0d0b; padding:1.3rem 1.4rem;">
-          <div style="font-size:clamp(1.6rem,4vw,2.4rem); font-weight:700; letter-spacing:-0.03em; color:var(--acc);">{{ s.n }}</div>
-          <div style="font-family:'JetBrains Mono',monospace; font-size:0.74rem; text-transform:uppercase; letter-spacing:0.1em; color:#8a938c; margin-top:0.3rem;">{{ s.label }}</div>
+      </div>
+      <div class="work-card">
+        <div class="id">DSS-003</div>
+        <div>
+          <h3 data-i="w3h">Decision support for hosting management</h3>
+          <p data-i="w3p">Models and algorithms that help operators make better infrastructure decisions — the applied core of my dissertation research.</p>
+          <div class="tags"><span class="chip">Python</span><span class="chip">ML / DSS</span><span class="chip">Research</span></div>
         </div>
-      </sc-for>
-    </div>
-
-    <div style="display:flex; flex-wrap:wrap; gap:0.5rem; margin-bottom:1.6rem;">
-      <sc-for list="{{ chips }}" as="ch" hint-placeholder-count="4">
-        <button onClick="{{ ch.onClick }}" style="{{ ch.style }}">{{ ch.label }}</button>
-      </sc-for>
-    </div>
-
-    <div>
-      <sc-for list="{{ pubs }}" as="p" hint-placeholder-count="6">
-        <div style="display:grid; grid-template-columns:2.6rem minmax(0,1fr) auto; gap:clamp(0.8rem,2vw,1.4rem); align-items:start; padding:1.35rem 0; border-top:1px solid rgba(232,236,232,0.08);">
-          <div style="font-family:'JetBrains Mono',monospace; font-size:1rem; color:var(--acc); padding-top:0.15rem;">{{ p.no }}</div>
-          <div>
-            <h3 style="font-size:clamp(0.98rem,1.5vw,1.12rem); font-weight:600; line-height:1.4; margin:0 0 0.5rem; letter-spacing:-0.005em; text-wrap:pretty;">{{ p.title }}</h3>
-            <div style="font-family:'JetBrains Mono',monospace; font-size:0.8rem; color:#8a938c; margin-bottom:0.25rem;">{{ p.authors }}</div>
-            <div style="font-family:'JetBrains Mono',monospace; font-size:0.76rem; line-height:1.5; color:#6b7a70;">{{ p.venue }} · {{ p.year }}</div>
-          </div>
-          <div style="display:flex; flex-direction:column; align-items:flex-end; gap:0.5rem; text-align:right;">
-            <span style="font-family:'JetBrains Mono',monospace; font-size:0.68rem; text-transform:uppercase; letter-spacing:0.08em; color:#c4ccc6; border:1px solid rgba(232,236,232,0.14); border-radius:5px; padding:0.28rem 0.55rem; white-space:nowrap;">{{ p.kindText }}</span>
-            <sc-if value="{{ p.url }}" hint-placeholder-val="{{ false }}">
-              <a href="{{ p.url }}" target="_blank" rel="noopener" style="font-family:'JetBrains Mono',monospace; font-size:0.68rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--acc); text-decoration:none; border:1px solid rgba(75,245,154,0.28); border-radius:5px; padding:0.28rem 0.55rem; white-space:nowrap;" style-hover="background:rgba(75,245,154,0.1);">{{ p.linkText }}</a>
-            </sc-if>
-            <sc-if value="{{ p.hasCites }}" hint-placeholder-val="{{ false }}">
-              <span style="font-family:'JetBrains Mono',monospace; font-size:0.72rem; color:var(--acc); white-space:nowrap;">{{ p.citesLabel }}</span>
-            </sc-if>
-          </div>
-        </div>
-      </sc-for>
+      </div>
     </div>
   </section>
 
-  <!-- CONTACT -->
-  <section id="contact" data-screen-label="Contact" style="padding:clamp(5rem,11vw,10rem) clamp(1.2rem,5vw,5rem); border-top:1px solid rgba(232,236,232,0.07); text-align:center;">
-    <div style="font-family:'JetBrains Mono',monospace; font-size:0.82rem; color:var(--acc); margin-bottom:1.2rem;">{{ t.contactKicker }}</div>
-    <h2 style="font-size:clamp(2.6rem,9vw,6.5rem); font-weight:700; letter-spacing:-0.04em; line-height:0.95; margin:0 0 1.4rem;">{{ t.contactHeading }}</h2>
-    <p style="font-size:clamp(1rem,1.6vw,1.2rem); color:#9aa39c; margin:0 auto 2.4rem; max-width:32rem;">{{ t.contactDesc }}</p>
-    <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:0.8rem;">
-      <a href="mailto:dessanhemrayev@gmail.com" style="font-family:'JetBrains Mono',monospace; font-size:0.92rem; font-weight:700; text-decoration:none; color:#0a0d0b; background:var(--acc); padding:0.95rem 1.7rem; border-radius:8px;" style-hover="transform:translateY(-2px);">dessanhemrayev@gmail.com</a>
-      <a href="https://github.com/dessanhemrayev" target="_blank" rel="noopener" style="font-family:'JetBrains Mono',monospace; font-size:0.92rem; font-weight:500; text-decoration:none; color:#e8ece8; border:1px solid rgba(232,236,232,0.2); padding:0.95rem 1.7rem; border-radius:8px;" style-hover="border-color:var(--acc); color:var(--acc);">GitHub</a>
-      <a href="https://scholar.google.com/citations?user=VmNUYckAAAAJ&hl=en" target="_blank" rel="noopener" style="font-family:'JetBrains Mono',monospace; font-size:0.92rem; font-weight:500; text-decoration:none; color:#e8ece8; border:1px solid rgba(232,236,232,0.2); padding:0.95rem 1.7rem; border-radius:8px;" style-hover="border-color:var(--acc); color:var(--acc);">Google Scholar</a>
-      <a href="https://elibrary.ru/author_profile.asp?authorid=1281146" target="_blank" rel="noopener" style="font-family:'JetBrains Mono',monospace; font-size:0.92rem; font-weight:500; text-decoration:none; color:#e8ece8; border:1px solid rgba(232,236,232,0.2); padding:0.95rem 1.7rem; border-radius:8px;" style-hover="border-color:var(--acc); color:var(--acc);">eLIBRARY</a>
-      <a href="https://orcid.org/0000-0001-5117-8376" target="_blank" rel="noopener" style="font-family:'JetBrains Mono',monospace; font-size:0.92rem; font-weight:500; text-decoration:none; color:#e8ece8; border:1px solid rgba(232,236,232,0.2); padding:0.95rem 1.7rem; border-radius:8px;" style-hover="border-color:var(--acc); color:var(--acc);">ORCID</a>
-      <a href="https://www.researchgate.net/profile/Dessan-Hemrayev" target="_blank" rel="noopener" style="font-family:'JetBrains Mono',monospace; font-size:0.92rem; font-weight:500; text-decoration:none; color:#e8ece8; border:1px solid rgba(232,236,232,0.2); padding:0.95rem 1.7rem; border-radius:8px;" style-hover="border-color:var(--acc); color:var(--acc);">ResearchGate</a>
+  <section id="research" class="reveal">
+    <div class="sec-head">
+      <span class="pair"><i class="w"></i><i class="bn"></i></span>
+      <span class="sec-tag">wh/bn — <span data-i="nav_research">research</span></span>
+    </div>
+    <div class="res-grid">
+      <div>
+        <h2 data-i="res_h">Research</h2>
+        <p data-i="res_p1">PhD candidate in Management in Organizational Systems. Dissertation: <strong data-i="res_topic">models and algorithms for intelligent decision support in hosting management</strong>.</p>
+        <p data-i="res_p2">Publications and profiles are indexed below.</p>
+      </div>
+      <div class="res-links">
+        <a href="https://scholar.google.com/citations?user=VmNUYckAAAAJ&hl=en">Google Scholar <span>→</span></a>
+        <a href="https://orcid.org/0000-0001-5117-8376">ORCID <span>→</span></a>
+        <a href="https://elibrary.ru/author_profile.asp?authorid=1281146">eLIBRARY <span>→</span></a>
+        <a href="https://www.researchgate.net/profile/Dessan-Hemrayev">ResearchGate <span>→</span></a>
+      </div>
     </div>
   </section>
 
-  <!-- FOOTER -->
-  <footer style="padding:2rem clamp(1.2rem,5vw,5rem); border-top:1px solid rgba(232,236,232,0.07); display:flex; flex-wrap:wrap; justify-content:space-between; gap:0.8rem; font-family:'JetBrains Mono',monospace; font-size:0.78rem; color:#6b7a70;">
-    <span>{{ t.footer }}</span>
-    <span>© 2026</span>
-  </footer>
+  <section id="notes" class="reveal">
+    <div class="sec-head">
+      <span class="pair"><i class="w"></i><i class="sl"></i></span>
+      <span class="sec-tag">wh/sl — <span data-i="nav_notes">notes</span></span>
+    </div>
+    <div class="notes-card">
+      <div>
+        <h3 data-i="notes_h">Engineering knowledge base</h3>
+        <p data-i="notes_p">Working notes on Go, Flutter, Odoo, messaging protocols and AI — written in Markdown, versioned in Git, published automatically.</p>
+        <div class="path">notes (private) → actions → knowledge (public) → pages</div>
+      </div>
+      <a class="btn" href="https://dessanhemrayev.github.io/knowledge/" data-i="notes_btn">Open the notes →</a>
+    </div>
+  </section>
+</main>
 
-</div>
-</x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:900},&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#4bf59a&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Style&quot;,&quot;options&quot;:[&quot;#4bf59a&quot;,&quot;#39d98a&quot;,&quot;#8affc1&quot;,&quot;#3ee6ff&quot;]},&quot;defaultLang&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;en&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;en&quot;,&quot;ru&quot;],&quot;section&quot;:&quot;Content&quot;},&quot;showTerminal&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Content&quot;}}">
-class Component extends DCLogic {
-  state = { lang: null };
+<footer id="contact">
+  <div class="fwrap">
+    <h2 data-i="c_h">Get in touch</h2>
+    <p class="sub" data-i="c_p">For work, research collaboration, or a good architecture argument.</p>
+    <div class="contact-row">
+      <a class="btn primary" href="mailto:dessanhemrayev@gmail.com">dessanhemrayev@gmail.com</a>
+      <a class="btn" href="https://github.com/dessanhemrayev">GitHub</a>
+      <a class="btn" href="https://dev.to/dessanhemrayev">Dev.to</a>
+    </div>
+    <div class="legal">
+      <span>© 2026 Dessan Hemrayev</span>
+      <span data-i="c_sig">200 OK — thanks for reading</span>
+    </div>
+  </div>
+</footer>
 
-  componentDidMount() { this.applyAccent(); }
-  componentDidUpdate(prevProps) {
-    if (this.props.accent !== prevProps.accent) {
-      this.applyAccent();
-    }
+<script>
+const I18N = {
+  en: {
+    nav_about:"about", nav_stack:"stack", nav_work:"work", nav_research:"research", nav_notes:"notes", nav_contact:"contact",
+    hero_kicker:"backend · communications infrastructure",
+    hero_sub:"builds the lines people talk over.",
+    hero_lede:"Backend engineer with 6+ years in production systems — VoIP platforms, real-time messaging, and the infrastructure that keeps calls connected. PhD researcher in intelligent decision support.",
+    hero_notes:"Knowledge base",
+    ladder_head:"session setup", ep_you:"you",
+    ladder_wait:"establishing session…", ladder_done:"session established — media flowing",
+    about_h:"Six years on the wire.",
+    about_p1:"I work on the backend of real-time communication: SIP servers, XMPP messaging, WebRTC gateways — the systems where a dropped packet is a dropped word. My daily tools are <strong>Flexisip, Asterisk and Openfire</strong>, wired together with Go, Python, Java and C#.",
+    about_p2:"Alongside industry work, I'm a PhD researcher building models and algorithms for intelligent decision support — bringing formal methods to the operational chaos of infrastructure management.",
+    f1k:"experience", f1v:"6+ years, production backend",
+    f2k:"focus", f2v:"VoIP · messaging · infrastructure",
+    f3k:"research", f3v:"intelligent decision support",
+    f4k:"status", f4v:"open to interesting problems",
+    stack_h:"Tools of the trade", st1:"languages", st2:"communications", st3:"platform",
+    work_h:"Selected work",
+    w1h:"Enterprise communications infrastructure",
+    w1p:"SIP registration, routing and push delivery on Flexisip; PBX logic on Asterisk; corporate messaging on Openfire — deployed and debugged down to the packet level.",
+    w2h:"End-to-end encrypted messenger",
+    w2p:"A from-scratch E2EE messenger: protocol design, key management and server architecture — where cryptography meets delivery guarantees.",
+    w3h:"Decision support for hosting management",
+    w3p:"Models and algorithms that help operators make better infrastructure decisions — the applied core of my dissertation research.",
+    res_h:"Research",
+    res_p1:"PhD candidate in Management in Organizational Systems. Dissertation: <strong>models and algorithms for intelligent decision support in hosting management</strong>.",
+    res_p2:"Publications and profiles are indexed below.",
+    notes_h:"Engineering knowledge base",
+    notes_p:"Working notes on Go, Flutter, Odoo, messaging protocols and AI — written in Markdown, versioned in Git, published automatically.",
+    notes_btn:"Open the notes →",
+    c_h:"Get in touch",
+    c_p:"For work, research collaboration, or a good architecture argument.",
+    c_sig:"200 OK — thanks for reading"
+  },
+  ru: {
+    nav_about:"обо мне", nav_stack:"стек", nav_work:"проекты", nav_research:"наука", nav_notes:"заметки", nav_contact:"контакты",
+    hero_kicker:"backend · коммуникационная инфраструктура",
+    hero_sub:"строит линии, по которым говорят люди.",
+    hero_lede:"Backend-инженер, 6+ лет в продакшн-системах: VoIP-платформы, обмен сообщениями в реальном времени и инфраструктура, которая держит связь. Аспирант, исследую интеллектуальную поддержку принятия решений.",
+    hero_notes:"База знаний",
+    ladder_head:"установка сессии", ep_you:"вы",
+    ladder_wait:"устанавливаем сессию…", ladder_done:"сессия установлена — медиа идёт",
+    about_h:"Шесть лет на линии.",
+    about_p1:"Я занимаюсь бэкендом связи в реальном времени: SIP-серверы, XMPP-мессенджинг, WebRTC-шлюзы — системы, где потерянный пакет означает потерянное слово. Мои ежедневные инструменты — <strong>Flexisip, Asterisk и Openfire</strong>, связанные кодом на Go, Python, Java и C#.",
+    about_p2:"Параллельно с индустрией — аспирантура: модели и алгоритмы интеллектуальной поддержки принятия решений, формальные методы против операционного хаоса инфраструктуры.",
+    f1k:"опыт", f1v:"6+ лет, продакшн-бэкенд",
+    f2k:"фокус", f2v:"VoIP · мессенджинг · инфраструктура",
+    f3k:"наука", f3v:"интеллектуальная поддержка решений",
+    f4k:"статус", f4v:"открыт для интересных задач",
+    stack_h:"Рабочие инструменты", st1:"языки", st2:"связь", st3:"платформа",
+    work_h:"Избранные проекты",
+    w1h:"Корпоративная коммуникационная инфраструктура",
+    w1p:"SIP-регистрация, маршрутизация и push-доставка на Flexisip; логика АТС на Asterisk; корпоративный мессенджинг на Openfire — развёрнуто и отлажено до уровня пакетов.",
+    w2h:"Мессенджер со сквозным шифрованием",
+    w2p:"E2EE-мессенджер с нуля: дизайн протокола, управление ключами и серверная архитектура — там, где криптография встречается с гарантиями доставки.",
+    w3h:"Поддержка решений для управления хостингом",
+    w3p:"Модели и алгоритмы, помогающие операторам принимать лучшие инфраструктурные решения — прикладное ядро диссертационного исследования.",
+    res_h:"Научная работа",
+    res_p1:"Аспирант по специальности «Управление в организационных системах». Диссертация: <strong>модели и алгоритмы интеллектуальной поддержки принятия решений при управлении хостингом</strong>.",
+    res_p2:"Публикации и профили — по ссылкам ниже.",
+    notes_h:"Инженерная база знаний",
+    notes_p:"Рабочие конспекты по Go, Flutter, Odoo, протоколам связи и ИИ — в Markdown, с версиями в Git, публикуются автоматически.",
+    notes_btn:"Открыть заметки →",
+    c_h:"Связаться",
+    c_p:"По работе, научному сотрудничеству или хорошему архитектурному спору.",
+    c_sig:"200 OK — спасибо, что дочитали"
   }
-  applyAccent() {
-    const a = this.props.accent;
-    if (a) document.documentElement.style.setProperty('--acc', a);
-  }
+};
 
-  renderVals() {
-    const lang = this.state.lang ?? (this.props.defaultLang ?? 'en');
-    const showTerminal = this.props.showTerminal ?? true;
-
-    const en = {
-      nav: { about: 'About', stack: 'Stack', work: 'What I build', pubs: 'Research', contact: 'Contact' },
-      availTag: 'Available for work',
-      role: 'Backend / Fullstack Developer · Python',
-      heroDesc: 'Backend/Fullstack developer with 6+ years of commercial experience. I build reliable APIs, corporate integrations, VOIP, messaging, ERP and AI-powered services.',
-      aboutKicker: '// about',
-      about: 'I design and evolve server-side systems, integration layers and automation around corporate products. Backend is where I feel at home — connecting business logic, infrastructure and real-time communication into systems that keep running.',
-      about2: '6+ years in commercial development. Experience with Openfire, Asterisk, Keycloak, Odoo, Matrix, Hagrid, AI services and CI/CD automation.',
-      stackKicker: '// stack',
-      stackHeading: 'Tools I work with',
-      stackGroups: [
-        { label: 'Languages', items: ['Python', 'JS / TS', 'Java', 'Rust', 'Go', 'Dart'] },
-        { label: 'Frameworks', items: ['FastAPI', 'Django', 'Odoo', 'Flutter'] },
-        { label: 'Data & Infra', items: ['PostgreSQL', 'S3', 'Redis', 'Docker', 'GitLab CI/CD', 'Linux', 'Git'] },
-        { label: 'Comms / VOIP', items: ['Openfire', 'Asterisk', 'Flexisip', 'SIP', 'XMPP/XMTP', 'Matrix'] },
-        { label: 'Identity & AI', items: ['Keycloak', 'OAuth2', 'WebSocket', 'STT', 'TTS', 'OCR', 'AI assistants'] },
-      ],
-      workKicker: '// what I build',
-      workHeading: 'Focus areas',
-      workCards: [
-        { no: '01', title: 'Backend & Integrations', desc: 'HTTP/REST and real-time APIs with FastAPI, Django and Odoo. Corporate integrations, PostgreSQL, Docker and business-process automation.' },
-        { no: '02', title: 'Messaging & VOIP', desc: 'Openfire, Matrix, Asterisk and SIP integrations: Keycloak-based access, click-to-call flows, direct and group calls, S3-backed media scenarios.' },
-        { no: '03', title: 'AI Services', desc: 'FastAPI services for STT, TTS, OCR, quick replies and AI assistants integrated into existing product workflows.' },
-        { no: '04', title: 'ERP / Odoo', desc: 'Custom Odoo modules for payments, KYC, Asterisk integration and internal business workflows.' },
-        { no: '05', title: 'Security & Automation', desc: 'Keycloak, OAuth2, Hagrid key-management improvements, GitLab CI/CD pipelines and Dockerized build/deploy automation.' },
-      ],
-      learningLabel: 'Currently learning',
-      learning: ['Advanced Python', 'System Design', 'DevOps', 'Cloud Architecture', 'Multi-agent orchestration'],
-      pubsKicker: '// research',
-      pubsHeading: 'Publications & patents',
-      pubsSub: 'Peer-reviewed papers, conference talks and registered software — computer security, neural logic and enterprise systems.',
-      contactKicker: '// contact',
-      contactHeading: "Let's build something.",
-      contactDesc: 'Open to backend projects, research collaboration and work at the intersection of Python, AI/RAG and enterprise systems.',
-      footer: 'Built by Dessan Hemrayev',
-    };
-
-    const ru = {
-      nav: { about: 'Обо мне', stack: 'Стек', work: 'Чем занимаюсь', pubs: 'Наука', contact: 'Контакты' },
-      availTag: 'Открыт к предложениям',
-      role: 'Backend / Fullstack-разработчик · Python',
-      heroDesc: 'Backend/Fullstack-разработчик с 6+ годами коммерческого опыта. Создаю надёжные API, корпоративные интеграции, VOIP, мессенджинг, ERP и AI-сервисы.',
-      aboutKicker: '// обо мне',
-      about: 'Проектирую и развиваю серверные системы, интеграционные слои и автоматизацию вокруг корпоративных продуктов. Backend — моя стихия: связываю бизнес-логику, инфраструктуру и связь в реальном времени в системы, которые просто работают.',
-      about2: '6+ лет в коммерческой разработке. Опыт с Openfire, Asterisk, Keycloak, Odoo, Matrix, Hagrid, AI-сервисами и CI/CD-автоматизацией.',
-      stackKicker: '// стек',
-      stackHeading: 'С чем работаю',
-      stackGroups: [
-        { label: 'Языки', items: ['Python', 'JS / TS', 'Java', 'Rust', 'Go', 'Dart'] },
-        { label: 'Фреймворки', items: ['FastAPI', 'Django', 'Odoo', 'Flutter'] },
-        { label: 'Данные и инфра', items: ['PostgreSQL', 'S3', 'Redis', 'Docker', 'GitLab CI/CD', 'Linux', 'Git'] },
-        { label: 'Связь / VOIP', items: ['Openfire', 'Asterisk', 'Flexisip', 'SIP', 'XMPP/XMTP', 'Matrix'] },
-        { label: 'Identity и AI', items: ['Keycloak', 'OAuth2', 'WebSocket', 'STT', 'TTS', 'OCR', 'AI-ассистенты'] },
-      ],
-      workKicker: '// чем занимаюсь',
-      workHeading: 'Направления',
-      workCards: [
-        { no: '01', title: 'Backend и интеграции', desc: 'HTTP/REST и realtime API на FastAPI, Django и Odoo. Корпоративные интеграции, PostgreSQL, Docker и автоматизация бизнес-процессов.' },
-        { no: '02', title: 'Мессенджинг и VOIP', desc: 'Интеграции Openfire, Matrix, Asterisk и SIP: доступ через Keycloak, click-to-call, прямые и групповые звонки, сценарии с S3.' },
-        { no: '03', title: 'AI-сервисы', desc: 'FastAPI-сервисы для STT, TTS, OCR, быстрых ответов и AI-ассистентов, встроенные в существующие продуктовые сценарии.' },
-        { no: '04', title: 'ERP / Odoo', desc: 'Кастомные модули Odoo для платежей, KYC, интеграции с Asterisk и внутренних бизнес-процессов.' },
-        { no: '05', title: 'Безопасность и автоматизация', desc: 'Keycloak, OAuth2, доработки Hagrid для управления ключами, GitLab CI/CD-пайплайны и Docker-автоматизация сборки и деплоя.' },
-      ],
-      learningLabel: 'Сейчас изучаю',
-      learning: ['Продвинутый Python', 'System Design', 'DevOps', 'Облачная архитектура', 'Мультиагентная оркестрация'],
-      pubsKicker: '// наука',
-      pubsHeading: 'Публикации и патенты',
-      pubsSub: 'Научные статьи, доклады и свидетельства о регистрации ПО — информационная безопасность, нейронная логика и корпоративные системы.',
-      contactKicker: '// контакты',
-      contactHeading: 'Давай что-нибудь сделаем.',
-      contactDesc: 'Открыт к backend-проектам, исследовательским коллаборациям и задачам на стыке Python, AI/RAG и enterprise-систем.',
-      footer: 'Сделано Dessan Hemrayev',
-    };
-
-    const isEn = lang === 'en';
-    const isRu = lang === 'ru';
-
-    const PUBS = [
-      { no: '01', title: 'Сравнительный анализ фреймворков мультиагентной оркестрации для задач управления IT-хостингом и их интеграции с протоколом MCP', authors: 'Хемраев Д.', venue: 'Информационные технологии и инжиниринг : материалы V Международной молодёжной научно-практической конференции, Белгород, 17 апреля 2026 года · С. 299–303', year: 2026, cites: 0, kind: 'conf', url: 'http://dspace.bsuedu.ru/handle/123456789/66728' },
-      { no: '02', title: 'Гибридная архитектура интеграции RAG и MCP для интеллектуальной поддержки принятия решений в IT-хостинге', authors: 'Хемраев Д.', venue: 'Горинские чтения. Инновационные решения для АПК : материалы VIII Международной студенческой научной конференции, Майский, 25–26 февраля 2026 года. Майский: ФГБОУ ВО Белгородский ГАУ · С. 140–141', year: 2026, cites: 0, kind: 'conf', url: 'https://elibrary.ru/item.asp?id=91657745' },
-      { no: '03', title: 'TRONIC Enterprise Messenger', authors: 'Кучерявая Е.С., Серебровский В.В., Хемраев Д., Холодов А.Э.', venue: 'Свидетельство о регистрации ПО · RU 2025666208 · заявка № 2025665052', year: 2025, cites: 0, kind: 'cert', url: 'https://elibrary.ru/item.asp?id=82656086' },
-      { no: '04', title: 'Интеллектуальная поддержка управленческих решений в IT-хостинге на основе базы знаний и больших языковых моделей с использованием RAG-подхода', authors: 'Хемраев Д.', venue: 'Горинские чтения. Инновационные решения для АПК — VII Междунар. студ. науч. конф., Майский · С. 173–174', year: 2025, cites: 0, kind: 'conf', url: 'https://elibrary.ru/item.asp?id=81587793' },
-      { no: '05', title: 'Математические модели при разработке информационной инфраструктуры для Industry 4.0', authors: 'Хемраев Д., Серебровский В.В., Журавлева Е.В.', venue: 'Актуальные исследования РТУ МИРЭА — 2025: Институт технологий управления : сборник научных трудов. М.: МИРЭА — Российский технологический университет · ISBN 978-5-7339-2748-0', year: 2025, cites: 0, kind: 'conf', url: 'https://istina.msu.ru/publications/article/821472502/' },
-      { no: '06', title: 'Анализ технологических решений для разработки информационной системы приёмной комиссии высшего учебного заведения', authors: 'Быканов И.Г., Хемраев Д.', venue: 'Информационные технологии и инжиниринг — междунар. молод. науч.-практ. конф., Белгород · С. 277–281', year: 2025, cites: 0, kind: 'conf', url: 'https://elibrary.ru/item.asp?id=82862907' },
-      { no: '07', title: 'Использование open source решений для автоматизации и интеграции бизнес-процессов на примере Odoo фреймворка', authors: 'Хемраев Д., Серебровский В.В., Быканов И.Г.', venue: 'Научный результат. Информационные технологии · Т. 10, № 1 · С. 36–46', year: 2025, cites: 1, kind: 'journal', url: 'https://elibrary.ru/item.asp?id=80641089' },
-      { no: '08', title: 'Информационная безопасность как междисциплинарная наука', authors: 'Хемраев Д.', venue: 'Исторические, философские, методологические проблемы современной науки — 5-я Междунар. науч. конф. молодых учёных, Курск · С. 214–217', year: 2022, cites: 0, kind: 'conf', url: 'https://elibrary.ru/item.asp?id=49335980' },
-      { no: '09', title: 'Мобильное приложение «Личный кабинет студента» как средство автоматизации образовательной деятельности вуза', authors: 'Хемраев Д., Ливай К.А., Томакова И.А.', venue: 'Актуальные проблемы бухгалтерского учёта, анализа и аудита — 14-я Всерос. молод. науч.-практ. конф., Курск · С. 240–243', year: 2022, cites: 0, kind: 'conf', url: 'https://elibrary.ru/item.asp?id=49187580' },
-      { no: '10', title: 'Сумматор на элементах нейронной логики', authors: 'Шевелев С.С., Хемраев Д., Ливай К.А.', venue: 'Современные информационные технологии и информационная безопасность — Всерос. науч.-техн. конф., Курск · С. 25–29', year: 2022, cites: 0, kind: 'conf', url: 'https://elibrary.ru/item.asp?id=48691485' },
-      { no: '11', title: 'Вычитатель на элементах нейронной логики', authors: 'Шевелев С.С., Хемраев Д.', venue: 'Современные информационные технологии и информационная безопасность — Всерос. науч.-техн. конф., Курск · С. 29–33', year: 2022, cites: 0, kind: 'conf', url: 'https://elibrary.ru/item.asp?id=48691486' },
-      { no: '12', title: 'Программа, моделирующая работу параллельно-последовательного сумматора-вычитателя старшими разрядами вперёд на нейронах', authors: 'Шевелев С.С., Хемраев Д.', venue: 'Свидетельство о регистрации ПО · RU 2021661381 · заявка № 2021660320', year: 2021, cites: 0, kind: 'cert', url: 'https://elibrary.ru/item.asp?id=46482496' },
-      { no: '13', title: 'Повышение достоверности определения источника фрагментированных сообщений за счёт использования методов анализа времени поступления отдельных фрагментов', authors: 'Таныгин М.О., Хемраев Д., Казакова О.В.', venue: 'Известия Юго-Западного гос. университета. Управление, вычислительная техника, информатика · Т. 11, № 4 · С. 46–60', year: 2021, cites: 2, kind: 'journal', url: 'https://elibrary.ru/item.asp?id=47928545' },
-      { no: '14', title: 'Использование методов статического анализа времени поступления информационных пакетов при построении информационных цепочек', authors: 'Хемраев Д., Таныгин М.О.', venue: 'Инфокоммуникации и космические технологии — III Всерос. науч.-практ. конф. · С. 111–115', year: 2019, cites: 2, kind: 'conf', url: 'https://elibrary.ru/item.asp?id=41125165' },
-      { no: '15', title: 'Использование метаданных для исправления ошибок аутентификации при сетевом взаимодействии', authors: 'Таныгин М.О., Алшаиа Х.Я., Хемраев Д.', venue: 'Инфобезопасность-2019 — XXIII пленум ФУМО ВО ИБ и Всерос. науч. конф. · С. 14–18', year: 2019, cites: 0, kind: 'conf', url: 'https://elibrary.ru/item.asp?id=41502540' },
-    ];
-    const kindLabel = isRu
-      ? { cert: 'Св-во ЭВМ', journal: 'Статья', conf: 'Доклад' }
-      : { cert: 'Software reg.', journal: 'Journal', conf: 'Conference' };
-    const filter = this.state.filter ?? 'all';
-    const pubs = (filter === 'all' ? PUBS : PUBS.filter((p) => p.kind === filter)).map((p) => ({
-      ...p,
-      kindText: kindLabel[p.kind],
-      linkText: p.url && p.url.includes('elibrary.ru') ? 'eLIBRARY' : 'link',
-      hasCites: p.cites > 0,
-      citesLabel: (isRu ? '↑ цит. ' : '↑ cited ') + p.cites,
-    }));
-    const chipDefs = isRu
-      ? [['all', 'Все'], ['conf', 'Доклады'], ['journal', 'Статьи'], ['cert', 'Св-ва ЭВМ']]
-      : [['all', 'All'], ['conf', 'Conference'], ['journal', 'Journal'], ['cert', 'Software reg.']];
-    const chipStyle = (active) => ({
-      cursor: 'pointer',
-      border: '1px solid ' + (active ? 'transparent' : 'rgba(232,236,232,0.14)'),
-      background: active ? 'var(--acc)' : 'transparent',
-      color: active ? '#0a0d0b' : '#9aa39c',
-      fontFamily: "'JetBrains Mono', monospace",
-      fontSize: '0.78rem',
-      fontWeight: active ? 700 : 500,
-      padding: '0.42rem 0.95rem',
-      borderRadius: '100px',
-      transition: 'all 0.15s ease',
-    });
-    const chips = chipDefs.map(([key, label]) => ({
-      key, label,
-      style: chipStyle(filter === key),
-      onClick: () => this.setState({ filter: key }),
-    }));
-    const pubStats = isRu
-      ? [{ n: '15', label: 'публикаций' }, { n: '2', label: 'св-ва ЭВМ' }, { n: '5', label: 'цитирования' }, { n: '2019–26', label: 'годы' }]
-      : [{ n: '15', label: 'publications' }, { n: '2', label: 'software regs' }, { n: '5', label: 'citations' }, { n: '2019–26', label: 'years' }];
-
-    const tab = (active) => ({
-      cursor: 'pointer',
-      border: 'none',
-      fontFamily: "'JetBrains Mono', monospace",
-      fontSize: '0.78rem',
-      padding: '3px 8px',
-      borderRadius: '4px',
-      fontWeight: active ? 700 : 500,
-      color: active ? '#0a0d0b' : '#8a938c',
-      background: active ? 'var(--acc)' : 'transparent',
-      transition: 'all 0.15s ease',
-    });
-
-    return {
-      t: isRu ? ru : en,
-      isEn, isRu,
-      showTerminal,
-      enTabStyle: tab(isEn),
-      ruTabStyle: tab(isRu),
-      pubs, chips, pubStats,
-      setEn: () => this.setState({ lang: 'en' }),
-      setRu: () => this.setState({ lang: 'ru' }),
-    };
-  }
+function setLang(lang){
+  document.documentElement.lang = lang;
+  document.querySelectorAll('[data-i]').forEach(el=>{
+    const key = el.getAttribute('data-i');
+    if(I18N[lang][key]!==undefined) el.innerHTML = I18N[lang][key];
+  });
+  document.getElementById('btnEN').classList.toggle('on', lang==='en');
+  document.getElementById('btnRU').classList.toggle('on', lang==='ru');
+  try{ localStorage.setItem('lang', lang); }catch(e){}
+  // keep ladder footer state consistent
+  const foot = document.getElementById('ladderFoot');
+  const t = document.getElementById('ladderFootText');
+  if(foot.classList.contains('done')) t.textContent = I18N[lang].ladder_done;
 }
+
+let saved = 'en';
+try{ saved = localStorage.getItem('lang') || 'en'; }catch(e){}
+if(saved==='ru') setLang('ru');
+
+/* ladder animation */
+const msgs = document.querySelectorAll('.msg');
+const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+function finishLadder(){
+  const lang = document.documentElement.lang || 'en';
+  const foot = document.getElementById('ladderFoot');
+  foot.classList.add('done');
+  document.getElementById('ladderFootText').textContent = I18N[lang].ladder_done;
+  document.getElementById('statusDot').classList.add('live');
+}
+if(reduced){
+  msgs.forEach(m=>m.classList.add('show'));
+  finishLadder();
+}else{
+  msgs.forEach((m,i)=>setTimeout(()=>{
+    m.classList.add('show');
+    if(i===msgs.length-1) setTimeout(finishLadder, 400);
+  }, 600 + i*550));
+}
+
+/* scroll reveal */
+const io = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} });
+},{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 </script>
 </body>
 </html>
